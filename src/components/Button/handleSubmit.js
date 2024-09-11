@@ -6,6 +6,7 @@ export function handleSubmit(event, setError, navigate, dispatch) {
   const email = event.target.username.value;
   const password = event.target.password.value;
 
+  // Connexion de l'utilisateur
   fetch('http://localhost:3001/api/v1/user/login', {
     method: 'POST',
     headers: {
@@ -21,22 +22,39 @@ export function handleSubmit(event, setError, navigate, dispatch) {
       return response.json();
     })
     .then(data => {
-      console.log('Réponse de l\'API:', data); // Débogage
-
-      // Assumons que `data` a la structure suivante :
-      // { status: 200, message: '...', body: { ... } }
       if (data.status === 200 && data.message === 'User successfully logged in') {
-        // Assurez-vous que `data.body` contient les informations de l'utilisateur
-        dispatch(loginSuccess(data.body.user)); // Ajustez selon la structure réelle
+        const token = data.body.token;
+        localStorage.setItem('authToken', token); // Stockage du token
+
+        // Récupération du profil utilisateur avec le token
+        return fetch('http://localhost:3001/api/v1/user/profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Inclure le token dans l'en-tête Authorization
+          }
+        });
+      } else {
+        throw new Error('Erreur lors de la connexion');
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Réponse réseau non OK');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 200 && data.message === 'Successfully got user profile data') {
+        const userProfile = data.body;
+        // Mettez à jour le store avec le profil utilisateur et le token
+        dispatch(loginSuccess({ ...userProfile, token: localStorage.getItem('authToken') }));
         navigate('/user');
       } else {
-        // Si le message de l'API n'est pas celui attendu, considérez cela comme une erreur
-        dispatch(loginFailure('Une erreur est survenue. Veuillez réessayer.'));
-        setError('Une erreur est survenue. Veuillez réessayer.');
+        throw new Error('Erreur lors de la récupération du profil');
       }
     })
     .catch(error => {
-      // Gestion des erreurs réseau ou autres exceptions
       dispatch(loginFailure('Une erreur est survenue. Veuillez réessayer.'));
       setError('Une erreur est survenue. Veuillez réessayer.');
       console.error('Erreur de soumission du formulaire:', error);
