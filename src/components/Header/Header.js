@@ -33,7 +33,7 @@ function Header() {
               <i className="fa fa-user-circle"></i>
               {user?.userName || 'User'} {/* Affichage du nom d'utilisateur */}
             </Link>
-            <button className="main-nav-item" onClick={handleLogout}>
+            <button className="btn-log" onClick={handleLogout}>
               <i className="fa fa-sign-out"></i>
               Sign Out
             </button>

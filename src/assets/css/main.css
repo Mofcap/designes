@@ -53,9 +53,19 @@ body {
 
 .main-nav-item {
   text-decoration: none;
+  
+  
   margin-right: 0.5rem;
 }
-
+.btn-log{
+  border: none;
+  font-weight: bold;
+  color: #2c3e50;
+  background-color: #fff;
+}
+.btn-log:hover{
+text-decoration: underline;
+}
 .main-nav-item:hover {
   text-decoration: underline;
 }
@@ -71,7 +81,7 @@ body {
 }
 
 .hero {
-  background-image: url('../img/bank-tree.jpeg');
+  background-image: url('../img/bank-tree.webp');
   background-position: 0 -50px;
   background-size: cover;
   background-repeat: no-repeat;
@@ -100,19 +110,28 @@ body {
   font-size: 0.9rem;
 }
 .forma{
+ width: 100%;
+ height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 .form-user{
-  width: 50%;
-  
+  width: 30%;
+  height: 100%;
+ 
 }
+
+
+
+  
+
 .form-user button{
   background-color: #00bc77;
-  height: 15%;
+  height: 10%;
   width: 40%;
   margin: 5%;
+  font-weight: bold;
   color: white;
 }
 @media (min-width: 920px) {
@@ -136,6 +155,7 @@ body {
   .hero-content .text {
     font-size: 1.2rem;
   }
+  
 }
 
 .features {
@@ -303,4 +323,11 @@ body {
   .transaction-button {
     width: 200px;
   }
+  .form-user h1{
+    font-weight: 100;
+  }
+}
+@media (max-width: 700px) {
+  .form-user h1{
+font-size: 30px;  }
 }
