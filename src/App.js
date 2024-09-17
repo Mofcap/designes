@@ -13,7 +13,7 @@ function App() {
     
     <Router>
       
-    <div className="App">
+    <div className="body">
     
       <Header />
       <Routes>
