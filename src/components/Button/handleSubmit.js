@@ -17,7 +17,13 @@ export function handleSubmit(event, setError, navigate, dispatch) {
   })
     .then(response => {
       if (!response.ok) {
-        throw new Error('Réponse réseau non OK');
+        if (response.status === 400) {
+          // Si l'erreur est liée à une mauvaise requête (ex: mauvais email ou mot de passe)
+          throw new Error('email ou mot de passe incorrect');
+        } else {
+          // Autres erreurs réseau ou serveur
+          throw new Error('Erreur avec votre connexion à l\'API');
+        }
       }
       return response.json();
     })
@@ -35,12 +41,13 @@ export function handleSubmit(event, setError, navigate, dispatch) {
           }
         });
       } else {
+        // Si l'API retourne une réponse inattendue lors de la connexion
         throw new Error('Erreur lors de la connexion');
       }
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error('Réponse réseau non OK');
+        throw new Error('Erreur avec votre connexion à l\'API');
       }
       return response.json();
     })
@@ -55,8 +62,17 @@ export function handleSubmit(event, setError, navigate, dispatch) {
       }
     })
     .catch(error => {
-      dispatch(loginFailure('Une erreur est survenue. Veuillez réessayer.'));
-      setError('Une erreur est survenue. Veuillez réessayer.');
+      // Gérer les erreurs selon le message d'erreur
+      if (error.message === 'email ou mot de passe incorrect') {
+        setError('Email ou mot de passe incorrect.');
+      } else if (error.message.includes('connexion à l\'API')) {
+        setError('Erreur avec votre connexion à l\'API. Veuillez vérifier votre connexion.');
+      } else {
+        setError('Une erreur est survenue. Veuillez réessayer.');
+      }
+
+      // Mettre à jour le store Redux avec une erreur de connexion
+      dispatch(loginFailure(error.message));
       console.error('Erreur de soumission du formulaire:', error);
     });
 }
